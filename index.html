@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Intelligence Dashboard - Marshfield Medical Center</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6; 
+            color: var(--text-primary); 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-primary);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--success));
+        }
+
+        .header h1 { 
+            font-size: 3rem; 
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -0.025em;
+        }
+
+        .header .subtitle { 
+            font-size: 1.25rem; 
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.6;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card h2 { 
+            color: var(--text-primary);
+            margin-bottom: 20px; 
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card h3 { 
+            color: var(--text-primary);
+            margin-bottom: 16px; 
+            font-size: 1.375rem;
+            font-weight: 600;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(37, 99, 235, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .metric-value {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            margin: 16px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s ease;
+        }
+
+        .comparison-table tr:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .primary-row {
+            background: linear-gradient(135deg, #dbeafe, #e0f2fe) !important;
+            font-weight: 600;
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Visual Metrics */
+        .visual-metric {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .visual-metric:last-child {
+            border-bottom: none;
+        }
+
+        .visual-metric:hover {
+            background-color: var(--bg-secondary);
+            margin: 0 -12px;
+            padding: 16px 12px;
+            border-radius: 8px;
+        }
+
+        .metric-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 120px;
+        }
+
+        .metric-bar {
+            flex: 1;
+            height: 12px;
+            background: var(--bg-tertiary);
+            margin: 0 16px;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 6px;
+            transition: width 0.8s ease;
+            position: relative;
+        }
+
+        .metric-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Trend Indicators */
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .trend-up {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+        }
+
+        .trend-down {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            color: #991b1b;
+        }
+
+        .trend-stable {
+            background: linear-gradient(135deg, #f0f9ff, #dbeafe);
+            color: #1e40af;
+        }
+
+        /* Content Boxes */
+        .llm-content {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--success);
+            margin: 16px 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .key-insight {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left: 4px solid var(--warning);
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* Summary Stats */
+        .summary-stats {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+            border: 1px solid var(--border);
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 12px;
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 24px;
+            background: var(--bg-primary);
+            border-radius: 16px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .header {
+                padding: 24px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .visual-metric {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .metric-bar {
+                margin: 8px 0;
+            }
+
+            .comparison-table {
+                font-size: 0.8rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 8px 6px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Healthcare Intelligence Dashboard</h1>
+            <div class="subtitle">
+                Advanced Analytics for Marshfield Medical Center-Eau Claire
+            </div>
+            <div class="badge-container">
+                <span class="badge">📍 EAU CLAIRE, WI</span>
+                <span class="badge">🏢 STH</span>
+                <span class="badge">📊 3 Years Analysis</span>
+                <span class="badge">🤖 AI-Enhanced</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>🎯 Executive Summary</h2>
+            <div class="llm-content">
+                <strong>Key Performance Position:</strong> Marshfield Medical Center-Eau Claire has a high occupancy rate (79.23%) but ranks above peer hospitals in labor intensity with 18.01 FTE/bed, indicating potential overstaffing compared to peers.
+                <br><br>
+                <strong>Primary Efficiency Opportunities:</strong> Reduce reliance on contract labor (5.14%) to lower costs and optimize staffing models to align FTE/bed ratios closer to peer benchmarks for improved labor efficiency.
+                <br><br>
+                <strong>Critical Strategic Priorities:</strong> Focus on maximizing operational capacity by enhancing patient throughput and reassessing workforce allocation to reduce inefficiencies while maintaining high-quality care standards.
+                <br><br>
+                <strong>Top Financial/Operational Risk:</strong> Elevated labor costs due to excessive FTE/bed ratios and contract labor usage could impact profitability if occupancy rates drop or reimbursement pressures increase. Immediate workforce optimization is essential to mitigate risk.
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📊 Market Evolution (2020-2022)</h3>
+            <div class="grid-3">
+                <div class="metric-card">
+                    <span class="metric-value">+4.6%</span>
+                    <span class="metric-label">Hospital Count Change</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">+15.2%</span>
+                    <span class="metric-label">Market Revenue Growth</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">3</span>
+                    <span class="metric-label">Years Analyzed</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid-2">
+            <div class="card">
+                <h3>📈 Historical Performance</h3>
+                <div class="key-insight">
+                    Multi-year analysis across 3 years (2020, 2021, 2022)
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="grid-4">
+                        <div class="stat-box">
+                            <span class="stat-number">3</span>
+                            <span class="stat-label">Years Analyzed</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">2020-2022</span>
+                            <span class="stat-label">Period</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">44.0</span>
+                            <span class="stat-label">Current Beds</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">79.23%</span>
+                            <span class="stat-label">Current Occupancy</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 style="margin: 20px 0 16px 0; color: var(--text-primary);">📊 Key Performance Trends</h4>
+                <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px; margin: 15px 0;">
+                    <div class="visual-metric">
+                        <span class="metric-name">Total Beds</span>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: 76.0%"></div>
+                        </div>
+                        <span class="metric-value" style="font-size: 1rem; font-weight: 600;">44</span>
+                        <span class="trend-indicator trend-up">📈 +76.0%</span>
+                    </div>
+                    
+                    <div class="visual-metric">
+                        <span class="metric-name">FTE Staff</span>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: 100%"></div>
+                        </div>
+                        <span class="metric-value" style="font-size: 1rem; font-weight: 600;">792</span>
+                        <span class="trend-indicator trend-up">📈 +725.3%</span>
+                    </div>
+                    
+                    <div class="visual-metric">
+                        <span class="metric-name">Total Revenue</span>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: 100%"></div>
+                        </div>
+                        <span class="metric-value" style="font-size: 1rem; font-weight: 600;">$155.5M</span>
+                        <span class="trend-indicator trend-up">📈 +220.0%</span>
+                    </div>
+                    
+                    <div class="visual-metric">
+                        <span class="metric-name">Net Income</span>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: 100%; background: linear-gradient(90deg, var(--danger), #fca5a5);"></div>
+                        </div>
+                        <span class="metric-value" style="font-size: 1rem; font-weight: 600;">$-3.6M</span>
+                        <span class="trend-indicator trend-down">📉 -377.5%</span>
+                    </div>
+                    
+                    <div class="visual-metric">
+                        <span class="metric-name">Occupancy Rate</span>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: 100%"></div>
+                        </div>
+                        <span class="metric-value" style="font-size: 1rem; font-weight: 600;">79.2%</span>
+                        <span class="trend-indicator trend-up">📈 +508.5%</span>
+                    </div>
+                    
+                    <div class="visual-metric">
+                        <span class="metric-name">FTE per Bed</span>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: 100%"></div>
+                        </div>
+                        <span class="metric-value" style="font-size: 1rem; font-weight: 600;">18.0</span>
+                        <span class="trend-indicator trend-up">📈 +368.9%</span>
+                    </div>
+                </div>
+                
+                <h4 style="margin: 20px 0 16px 0; color: var(--text-primary);">📋 Historical Data Summary</h4>
+                <div class="table-container">
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Year</th>
+                            <th>Beds</th>
+                            <th>FTE</th>
+                            <th>Revenue ($M)</th>
+                            <th>Net Income ($M)</th>
+                            <th>Occupancy %</th>
+                            <th>FTE/Bed</th>
+                        </tr>
+                        <tr>
+                            <td><strong>2020</strong></td>
+                            <td>25.0</td>
+                            <td>95.99</td>
+                            <td>$48.6</td>
+                            <td>$1.3</td>
+                            <td>13.02%</td>
+                            <td>3.8</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2021</strong></td>
+                            <td>189.0</td>
+                            <td>2578.17</td>
+                            <td>$460.7</td>
+                            <td>$-2.2</td>
+                            <td>97.99%</td>
+                            <td>13.6</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2022</strong></td>
+                            <td>44.0</td>
+                            <td>792.25</td>
+                            <td>$155.5</td>
+                            <td>$-3.6</td>
+                            <td>79.23%</td>
+                            <td>18.0</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <h4 style="margin: 20px 0 12px 0; color: var(--text-primary);">🔍 Key Insights</h4>
+                <ul style="margin: 10px 0; padding-left: 20px; color: var(--text-secondary);">
+                    <li style="margin: 8px 0;">Strong revenue growth of 220.0% over the analysis period</li>
+                    <li style="margin: 8px 0;">Significant staffing expansion of 725.3%</li>
+                    <li style="margin: 8px 0;">Improved revenue efficiency per bed (+81.8%)</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3>🏆 Competitive Position</h3>
+                <div class="table-container">
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Hospital</th>
+                            <th>Beds</th>
+                            <th>FTE/Bed</th>
+                            <th>Occupancy</th>
+                            <th>Contract %</th>
+                            <th>Revenue/Bed</th>
+                        </tr>
+                        <tr class="primary-row">
+                            <td><strong>MARSHFIELD MEDICAL CENTER-EAU ... (PRIMARY)</strong></td>
+                            <td>44.0</td>
+                            <td>18.01</td>
+                            <td>79.23%</td>
+                            <td>5.14%</td>
+                            <td>$3534K</td>
+                        </tr>
+                        <tr>
+                            <td>MARSHFIELD MEDICAL CENTER - RI...</td>
+                            <td>5.0</td>
+                            <td>11.0</td>
+                            <td>31.96%</td>
+                            <td>48.87%</td>
+                            <td>$6022K</td>
+                        </tr>
+                        <tr>
+                            <td>OAK LEAF SURGICAL HOSPITAL LLC</td>
+                            <td>13.0</td>
+                            <td>19.83</td>
+                            <td>16.1%</td>
+                            <td>—</td>
+                            <td>$16704K</td>
+                        </tr>
+                        <tr>
+                            <td>MOSH</td>
+                            <td>16.0</td>
+                            <td>7.69</td>
+                            <td>25.7%</td>
+                            <td>5.22%</td>
+                            <td>$12799K</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid-2">
+            <div class="card">
+                <h3>💰 Market Analysis</h3>
+                <div class="llm-content">
+                    Wisconsin hospitals face staffing inefficiency, exceeding the regional FTE/bed benchmark (18.01 vs 15.6). High reliance on contract labor (5.14%) intensifies wage competitiveness pressure, especially as demand for nursing specialties rises. The limited tracking of four specialties risks gaps in workforce planning. To mitigate risks, optimize staffing models to align with regional benchmarks, reduce contract labor dependency through retention strategies, and expand specialty tracking to anticipate shortages. Invest in competitive wages and career development to improve positioning in a tightening labor market.
+                </div>
+                <h4 style="margin: 20px 0 16px 0; color: var(--text-primary);">Regional Wage Benchmarks</h4>
+                <div class="table-container">
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Nursing Specialty</th>
+                            <th>Mean Wage</th>
+                            <th>Employment</th>
+                        </tr>
+                        <tr><td>Nurse Anesthetists</td><td><strong>$245,853</strong></td><td>4,540</td></tr>
+                        <tr><td>Nurse Practitioners</td><td><strong>$130,564</strong></td><td>26,700</td></tr>
+                        <tr><td>Registered Nurses</td><td><strong>$89,307</strong></td><td>308,830</td></tr>
+                        <tr><td>Nursing Assistants</td><td><strong>$41,444</strong></td><td>135,150</td></tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>🎯 Strategic Recommendations</h3>
+                <div class="llm-content">
+                    <strong>1. Conduct role-specific productivity audits</strong> → Identify underutilized roles and reduce staffing by 5% without impacting patient care, optimizing staffing levels and saving ~$1.2M annually.
+                    <br><br>
+                    <strong>2. Implement cross-training programs</strong> → Train 20% of staff in dual roles to improve flexibility and reduce reliance on contract labor by 2%, saving ~$400K annually.
+                    <br><br>
+                    <strong>3. Adopt predictive scheduling tools</strong> → Use AI-driven tools to align staffing with occupancy trends, targeting a 10% reduction in overstaffed shifts, improving efficiency by 7%.
+                    <br><br>
+                    <strong>4. Enhance employee retention strategies</strong> → Offer incentives to reduce turnover by 15%, decreasing onboarding and training costs while improving continuity of care.
+                    <br><br>
+                    <strong>5. Negotiate long-term vendor contracts for contract labor</strong> → Lower contract labor costs by 10%, reducing overall contract labor spend by ~$250K annually while maintaining service quality.
+                </div>
+                
+                <h3 style="margin-top: 24px; margin-bottom: 16px;">🏆 Competitive Intelligence</h3>
+                <div class="llm-content">
+                    <strong>Competitive Positioning Analysis: MARSHFIELD MEDICAL CENTER-EAU CLAIRE</strong>
+                    <br><br>
+                    <strong>Market Ranking:</strong> With 44 beds and 79.23% occupancy, Marshfield leads in scale and patient retention compared to competitors with fewer beds (5-16) and significantly lower occupancies (16.1%-31.96%). Its 18.01 FTE/bed indicates operational efficiency relative to competitors, except Hospital 5 (7.69 FTE/bed).
+                    <br><br>
+                    <strong>Key Competitive Advantages:</strong>
+                    <br>• High occupancy rate reflects strong demand and efficient resource utilization
+                    <br>• Larger bed capacity enables broader service offerings and economies of scale
+                    <br><br>
+                    <strong>Primary Threats/Vulnerabilities:</strong>
+                    <br>• High FTE/bed compared to Hospital 5 may signal higher staffing costs
+                    <br>• Competitors with lower occupancy may pursue aggressive pricing or niche services to capture market share
+                    <br><br>
+                    <strong>Top Competitive Improvement Priority:</strong> Optimize staffing levels (reduce FTE/bed) while maintaining service quality to enhance cost-efficiency and competitiveness against Hospital 5.
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📋 Data Sources & Methodology</h2>
+            <div class="key-insight">
+                <strong>Analysis Period:</strong> 3 years (2020, 2021, 2022)
+            </div>
+            <div class="grid-4" style="margin: 20px 0;">
+                <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                    <strong style="color: var(--primary);">🏥 Hospital Data</strong><br>
+                    <span style="color: var(--text-primary);">CMS Hospital Cost Reports</span><br>
+                    <small style="color: var(--text-secondary);">Multi-year financial & operational metrics</small>
+                </div>
+                <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                    <strong style="color: var(--primary);">💼 Labor Data</strong><br>
+                    <span style="color: var(--text-primary);">Bureau of Labor Statistics</span><br>
+                    <small style="color: var(--text-secondary);">Occupational employment & wage statistics</small>
+                </div>
+                <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                    <strong style="color: var(--primary);">🤖 AI Analysis</strong><br>
+                    <span style="color: var(--text-primary);">Azure OpenAI GPT-4</span><br>
+                    <small style="color: var(--text-secondary);">Narrative insights & strategic recommendations</small>
+                </div>
+                <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                    <strong style="color: var(--primary);">📊 Analytics</strong><br>
+                    <span style="color: var(--text-primary);">Historical Trend Analysis</span><br>
+                    <small style="color: var(--text-secondary);">Year-over-year performance tracking</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Healthcare Intelligence Dashboard</strong> | Generated August 11, 2025</p>
+            <p>🤖 AI-Enhanced Analysis Platform | 📊 3 Years of Data | 🎯 Strategic Insights</p>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth scrolling and animation triggers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate metric bars on scroll
+            const observerOptions = {
+                threshold: 0.3,
+                rootMargin: '0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const fills = entry.target.querySelectorAll('.metric-fill');
+                        fills.forEach(fill => {
+                            const width = fill.style.width;
+                            fill.style.width = '0%';
+                            setTimeout(() => {
+                                fill.style.width = width;
+                            }, 200);
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            // Observe metric containers
+            document.querySelectorAll('.visual-metric').forEach(el => {
+                observer.observe(el.parentElement);
+            });
+
+            // Add hover effects to metric cards
+            document.querySelectorAll('.metric-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(-2px) scale(1)';
+                });
+            });
+
+            // Add click animation to cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', () => {
+                    card.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        card.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Add typing effect to key numbers
+            const animateNumbers = () => {
+                document.querySelectorAll('.metric-value').forEach(element => {
+                    const finalValue = element.textContent;
+                    const isPercentage = finalValue.includes('%');
+                    const isCurrency = finalValue.includes(');
+                    const isNegative = finalValue.includes('-');
+                    
+                    let numValue = parseFloat(finalValue.replace(/[^0-9.-]/g, ''));
+                    if (isNaN(numValue)) return;
+                    
+                    let currentValue = 0;
+                    const increment = numValue / 50;
+                    
+                    const timer = setInterval(() => {
+                        currentValue += increment;
+                        if ((increment > 0 && currentValue >= numValue) || (increment < 0 && currentValue <= numValue)) {
+                            currentValue = numValue;
+                            clearInterval(timer);
+                        }
+                        
+                        let displayValue = Math.abs(currentValue);
+                        if (isCurrency) {
+                            if (displayValue >= 1000000) {
+                                displayValue = (displayValue / 1000000).toFixed(1) + 'M';
+                            } else if (displayValue >= 1000) {
+                                displayValue = (displayValue / 1000).toFixed(1) + 'K';
+                            } else {
+                                displayValue = displayValue.toFixed(1);
+                            }
+                            element.textContent = (isNegative ? '$-' : ') + displayValue;
+                        } else if (isPercentage) {
+                            element.textContent = currentValue.toFixed(1) + '%';
+                        } else {
+                            element.textContent = currentValue.toFixed(0);
+                        }
+                    }, 30);
+                });
+            };
+
+            // Trigger number animation after page load
+            setTimeout(animateNumbers, 1000);
+        });
+    </script>
+</body>
+</html>
